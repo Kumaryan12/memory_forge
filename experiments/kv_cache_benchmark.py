@@ -862,13 +862,13 @@ def theoretical_cache_mib(
 
 VOCAB_SIZE = 256
 
-MAX_SEQ_LEN = 128
+MAX_SEQ_LEN = 512
 
-EMBEDDING_DIM = 128
+EMBEDDING_DIM = 256
 
-NUM_HEADS = 4
+NUM_HEADS = 8
 
-NUM_LAYERS = 4
+NUM_LAYERS = 6
 
 
 model = TinyGPT(
@@ -943,16 +943,16 @@ print(
 # ============================================================
 
 PROMPT_LENGTHS = [
-    8,
     16,
     32,
-    64
+    64,
+    128,
+    256
 ]
 
+NEW_TOKENS = 32
 
-NEW_TOKENS = 16
-
-REPEATS = 3
+REPEATS = 7
 
 
 results = []
@@ -1096,9 +1096,10 @@ for prompt_length in PROMPT_LENGTHS:
     )
 
 
-    final_context_length = (
+    cached_context_length = (
         prompt_length
         + NEW_TOKENS
+        - 1
     )
 
 
@@ -1107,7 +1108,7 @@ for prompt_length in PROMPT_LENGTHS:
             model,
             batch_size=1,
             context_length=(
-                final_context_length
+                cached_context_length
             )
         )
     )
